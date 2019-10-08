@@ -2,6 +2,10 @@
 const express = require('express');
 // Import the path module from node to create absolute file paths for express static
 const path = require('path');
+// Import axios for our node server
+const axios = require('axios');
+// Import MovieDB API key
+const api_key = process.env.MOVIEDB_API_KEY; 
 
 // Instantiate the express server
 const app = express();
@@ -12,3 +16,14 @@ const PORT = 3000;
 app.use(express.static(path.join(__dirname, '../client/dist')));
 // Start the server on the provided port
 app.listen(PORT, () => console.log('Listening on port: ' + PORT));
+
+
+app.get('/movies', function(req, res) {
+  axios.get(`https://api.themoviedb.org/3/movie/popular?api_key=${api_key}&language=en-US&page=1`)
+    .then(({data}) => {
+      res.status(200).send(data);
+    })
+    .catch((error) => {
+      console.log(error);
+    })
+});
