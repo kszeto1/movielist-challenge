@@ -27,11 +27,11 @@ class App extends Component {
 
   handleMostPopularMovies(moviesObj) {
     const popularMovies = moviesObj.map(movie => [
-      moviesObj.indexOf(movie),
-      movie.original_title,
-      movie.poster_path,
-      movie.vote_average 
-    ]
+        moviesObj.indexOf(movie),
+        movie.original_title,
+        movie.poster_path,
+        movie.vote_average 
+      ]
     );
 
     this.setState({ popularMovies, filteredMovies: popularMovies });
@@ -41,8 +41,9 @@ class App extends Component {
     const { popularMovies } = this.state;
 
     const filteredMovies = popularMovies.filter(movie => {
-      return (movie[1].toLowerCase().indexOf(query.toLowerCase()) !== -1);
+      return (movie[1].toLowerCase().includes(query.toLowerCase()));
     })
+    
     this.setState({value: query, filteredMovies});
   }
 
