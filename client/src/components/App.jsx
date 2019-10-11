@@ -8,15 +8,18 @@ class App extends Component {
     super(props);
     this.state = {
       popularMovies: [],
+      filteredMovies: [],
+      value: '',
     };
 
     this.handleMostPopularMovies = this.handleMostPopularMovies.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleSearch = this.handleSearch.bind(this);
   }
 
   componentDidMount() {
     axios.get('/movies')
       .then((result) => {
-        console.log('componentDidMount', result.data.results);
         this.handleMostPopularMovies(result.data.results);
 
       })
@@ -31,15 +34,27 @@ class App extends Component {
     ]
     );
 
-    this.setState({ popularMovies });
+    this.setState({ popularMovies, filteredMovies: popularMovies });
   }
-  render() {
-    console.log('state', this.state.popularMovies);
+
+  handleSearch(query) {
     const { popularMovies } = this.state;
+
+    const filteredMovies = popularMovies.filter(movie => {
+      return (movie[1].toLowerCase().indexOf(query.toLowerCase()) !== -1);
+    })
+    this.setState({value: query, filteredMovies});
+  }
+
+  handleSubmit(event) {
+    event.preventDefault();
+  }
+
+  render() {
     return (
       <div>
-        <SearchBar />
-        <PopularMovieList popularMovies={popularMovies}/>
+        <SearchBar handleSubmit={this.handleSubmit} handleSearch={this.handleSearch} value={this.state.value}/>
+        <PopularMovieList popularMovies={this.state.filteredMovies}/>
       </div>
     );
   }
